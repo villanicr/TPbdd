@@ -1,73 +1,32 @@
-// App.js (React)
-import React, { useEffect, useState } from 'react';
+import React from "react";
+import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import Home from "./pages/Home";
+import AddTrip from "./pages/AddTrip";
+import AddComment from "./pages/AddComment";
+import "./App.css";
 
-function App() {
-  const [message, setMessage] = useState('');
-  const [inputData, setInputData] = useState({ name: '', age: '' });
-
-  useEffect(() => {
-    // Solicitar el mensaje inicial del backend
-    fetch('http://localhost:3001/api')
-      .then(response => response.text())
-      .then(data => setMessage(data))
-      .catch(error => console.error('Error:', error));
-  }, []);
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setInputData({
-      ...inputData,
-      [name]: value,
-    });
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    // Enviar los datos del formulario al backend
-    fetch('http://localhost:3001/api/submit', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(inputData),  // Los datos que se envían en el formulario
-    })
-      .then(response => response.json())
-      .then(data => {
-        console.log(data);  // Muestra los datos devueltos por el backend
-        setMessage(data.message);  // Muestra el mensaje en el frontend
-      })
-      .catch(error => console.error('Error:', error));
-  };
-
+const App = () => {
   return (
-    <div>
-      <h1>Frontend en React</h1>
-      <p>Mensaje del backend: {message}</p>
-
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>Nombre:</label>
-          <input
-            type="text"
-            name="name"
-            value={inputData.name}
-            onChange={handleChange}
-          />
-        </div>
-        <div>
-          <label>Edad:</label>
-          <input
-            type="text"
-            name="age"
-            value={inputData.age}
-            onChange={handleChange}
-          />
-        </div>
-        <button type="submit">Enviar</button>
-      </form>
-    </div>
+    <Router>
+      <div className="app">
+        <nav className="navbar">
+          <h1 className="navbar-title">Travel App</h1>
+          <div className="navbar-links">
+            <Link to="/" className="navbar-link">Inicio</Link>
+            <Link to="/add-trip" className="navbar-link">Agregar Viaje</Link>
+            <Link to="/add-comment" className="navbar-link">Agregar Comentario</Link>
+          </div>
+        </nav>
+        <main className="main-content">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/add-trip" element={<AddTrip />} />
+            <Route path="/add-comment" element={<AddComment />} />
+          </Routes>
+        </main>
+      </div>
+    </Router>
   );
-}
+};
 
 export default App;
